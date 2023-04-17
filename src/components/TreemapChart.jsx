@@ -7,8 +7,8 @@ function TreemapChart({ data }) {
 
   useEffect(() => {
     const margin = { top: 10, right: 10, bottom: 10, left: 10 },
-      width = 600 - margin.left - margin.right,
-      height = 600 - margin.top - margin.bottom;
+      width = 420 - margin.left - margin.right,
+      height = 420 - margin.top - margin.bottom;
 
     const svg = d3
       .select(svgRef.current)

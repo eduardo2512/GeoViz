@@ -28,7 +28,7 @@ function MapChart({ data }) {
     };
   }, [data]);
 
-  return <div id="MapChart" ref={mapRef} style={{ height: "600px", width: "50%" }} />;
+  return <div id="MapChart" ref={mapRef} style={{ height: "400px", width: "50%" }} />;
 }
 
 export default MapChart;
