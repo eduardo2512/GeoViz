@@ -40,7 +40,7 @@ function Home() {
       valor && valuesFilter
         ? valuesFilter.find(value => value.key === valor)?.isCategorical
           ? ["Contagem"]
-          : ["Soma"]
+          : ["Soma", "Media", "Contagem"]
         : [],
     [valor, valuesFilter]
   );

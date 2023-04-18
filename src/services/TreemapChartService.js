@@ -24,7 +24,9 @@ class TreeMapChartService {
 
   calculaValor(produtos, valor, calculoValor) {
     if (calculoValor === "Contagem") {
-      return _.countBy(produtos, valor);
+      return produtos.length;
+    } else if (calculoValor === "Media") {
+      return _.sumBy(produtos, valor) / produtos.length;
     } else {
       return _.sumBy(produtos, valor);
     }
