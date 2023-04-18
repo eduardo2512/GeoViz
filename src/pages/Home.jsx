@@ -133,7 +133,17 @@ function Home() {
           `}
         >
           {selectedGeoJsonObject ? <MapChart data={selectedGeoJsonObject} /> : <></>}
-          {selectedGeoJsonObject ? <TreemapChart data={selectedGeoJsonObject} /> : <></>}
+          {selectedGeoJsonObject && categoria && valor && calculoValor ? (
+            <TreemapChart
+              data={selectedGeoJsonObject}
+              categoria={categoria}
+              detalhes={detalhes}
+              valor={valor}
+              calculoValor={calculoValor}
+            />
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     </div>

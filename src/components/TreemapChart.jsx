@@ -1,25 +1,41 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import TreemapChartService from "../services/TreemapChartService";
 
-function TreemapChart({ data }) {
+function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
   const svgRef = useRef();
+  const [svgCreated, setSvgCreated] = useState(false);
 
   useEffect(() => {
     const margin = { top: 10, right: 10, bottom: 10, left: 10 },
       width = 600 - margin.left - margin.right,
       height = 600 - margin.top - margin.bottom;
 
-    const svg = d3
-      .select(svgRef.current)
-      .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g");
+    let svg;
+
+    if (!svgCreated) {
+      svg = d3
+        .select(svgRef.current)
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g");
+      setSvgCreated(true);
+    } else {
+      svg = d3.select(svgRef.current).select("svg").select("g");
+      svg.selectAll("*").remove();
+    }
 
     // read json data
 
-    const dados = TreemapChartService.obterJsonTreeMap(data, "sigla", "sigla", "pop2000");
+    const dados = TreemapChartService.obterJsonTreeMap(
+      data,
+      categoria,
+      detalhes,
+      valor,
+      calculoValor
+    );
+
     // Give the data to this cluster layout:
     const root = d3.hierarchy(dados).sum(function (d) {
       return d.value;
@@ -67,9 +83,9 @@ function TreemapChart({ data }) {
       .attr("fill", "white");
 
     return () => {
-      svg.remove();
+      svg.selectAll("*").remove();
     };
-  }, [data]);
+  }, [data, detalhes, valor, categoria]);
   return <div className="Treemap" ref={svgRef}></div>;
 }
 
