@@ -18,6 +18,16 @@ function MapChart({ data }) {
       style: feature => {
         const color = d3.interpolateInferno(Math.random());
         return { color };
+      },
+      pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, {
+          radius: 8,
+          fillColor: "#ff7800",
+          color: "#000",
+          weight: 1,
+          opacity: 1,
+          fillOpacity: 0.8
+        });
       }
     }).addTo(map);
 
