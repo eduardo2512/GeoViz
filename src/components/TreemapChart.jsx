@@ -5,6 +5,7 @@ import TreemapChartService from "../services/TreemapChartService";
 function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
   const svgRef = useRef();
   const [svgCreated, setSvgCreated] = useState(false);
+  const [tooltipCreated, setTooltipCreated] = useState(false);
 
   useEffect(() => {
     const margin = { top: 10, right: 10, bottom: 10, left: 10 },
@@ -44,6 +45,43 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
     // Then d3.treemap computes the position of each element of the hierarchy
     d3.treemap().size([width, height]).padding(2)(root);
 
+    let Tooltip;
+
+    if (!tooltipCreated) {
+      Tooltip = d3
+        .select("#div_template")
+        .append("div")
+        .style("opacity", 0)
+        .attr("class", "tooltip")
+        .style("background-color", "white")
+        .style("border", "solid")
+        .style("border-width", "2px")
+        .style("border-radius", "5px")
+        .style("padding", "5px")
+        .style("position", "absolute")
+        .style("top", "0")
+        .style("left", "0")
+        .style("z-index", "2");
+      setTooltipCreated(true);
+    } else {
+      Tooltip = d3.select("#div_template").select("div");
+      Tooltip.selectAll("*").remove();
+    }
+
+    const mouseover = function (d) {
+      Tooltip.style("opacity", 1);
+      d3.select(this).style("stroke", "none").style("opacity", 0.8);
+    };
+    const mousemove = function (event, d) {
+      Tooltip.html("Categoria: " + d.data.name + "<br> Valor: " + d.data.value)
+        .style("left", d3.pointer(event)[0] + 70 + "px")
+        .style("top", d3.pointer(event)[1] + "px");
+    };
+    const mouseleave = function (d) {
+      Tooltip.style("opacity", 0);
+      d3.select(this).style("stroke", "black").style("opacity", 1);
+    };
+
     // use this information to add rectangles:
     svg
       .selectAll("rect")
@@ -63,7 +101,9 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
       })
       .style("stroke", "black")
       .style("fill", "slateblue")
-      .on("click", function (d) {});
+      .on("mouseover", mouseover)
+      .on("mousemove", mousemove)
+      .on("mouseleave", mouseleave);
 
     // and to add the text labels
     svg
@@ -85,8 +125,10 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
     return () => {
       svg.selectAll("*").remove();
     };
-  }, [data, detalhes, valor, categoria]);
-  return <div className="Treemap" ref={svgRef}></div>;
+  }, [data, detalhes, valor, categoria, calculoValor]);
+  return (
+    <div className="Treemap" ref={svgRef} id="div_template" style={{ position: "relative" }}></div>
+  );
 }
 
 export default TreemapChart;
