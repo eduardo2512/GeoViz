@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import HeaderContent from "../shared/components/HeaderContent";
 import FilterTreeMap from "../components/FilterTreeMap";
 import BasicSelect from "../shared/components/BasicSelect";
@@ -8,6 +8,7 @@ import InputGeoJson from "../components/InputGeoJson";
 import HomeService from "../services/HomeService";
 import MapChart from "../components/MapChart";
 import TreemapChart from "../components/TreemapChart";
+import GeoService from "../services/GeoService";
 
 function Home() {
   const [uploadGeoJsonObject, setUploadGeoJsonObject] = useState(null);
@@ -20,13 +21,25 @@ function Home() {
   const [calculoValor, setCalculoValor] = useState("");
   const [disableFilters, setDisableFilters] = useState(true);
 
-  const handleChangeOptionsMapGeoJson = event => {
+  useEffect(() => {
+    fetchDataOptions();
+  }, []);
+
+  async function fetchDataOptions() {
+    const options = await GeoService.getOptions();
+    setValores(...valores, options);
+  }
+
+  const handleChangeOptionsMapGeoJson = async event => {
     if (event.target.value === "Nenhuma opção disponível") return;
     setOptionMapGeoJson(event.target.value);
     setDisableFilters(false);
 
-    if (event.target.value === uploadGeoJsonObject.name) {
+    if (event.target.value === uploadGeoJsonObject?.name) {
       setSelectedGeoJsonObject(uploadGeoJsonObject);
+    } else {
+      const geojson = await GeoService.getGeoJson(event.target.value);
+      setSelectedGeoJsonObject(geojson);
     }
   };
 

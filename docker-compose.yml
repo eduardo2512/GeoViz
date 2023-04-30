@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  backend:
+    build: "./backend"
+    command: npm start
+    container_name: geoviz-backend
+    restart: always
+    ports:
+      - "8000:8000"
