@@ -38,9 +38,14 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
     );
 
     // Give the data to this cluster layout:
-    const root = d3.hierarchy(dados).sum(function (d) {
-      return d.value;
-    }); // Here the size of each leave is given in the 'value' field in input data
+    const root = d3
+      .hierarchy(dados)
+      .sum(function (d) {
+        return d.value;
+      })
+      .sort(function (a, b) {
+        return b.value - a.value;
+      }); // Here the size of each leave is given in the 'value' field in input data
 
     // Then d3.treemap computes the position of each element of the hierarchy
     d3.treemap().size([width, height]).padding(2)(root);
@@ -85,7 +90,7 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
     // use this information to add rectangles:
     svg
       .selectAll("rect")
-      .data(root.leaves())
+      .data(root.leaves().reverse())
       .join("rect")
       .attr("x", function (d) {
         return d.x0;
@@ -109,15 +114,29 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
     svg
       .selectAll("text")
       .data(root.leaves())
-      .join("text")
-      .attr("x", function (d) {
-        return d.x0 + 5;
-      }) // +10 to adjust position (more right)
-      .attr("y", function (d) {
-        return d.y0 + 20;
-      }) // +20 to adjust position (lower)
+      .join(enter =>
+        enter
+          .append("text")
+          .attr("x", function (d) {
+            return d.x0 + 5;
+          })
+          .attr("y", function (d) {
+            return d.y0 + 20;
+          })
+          .attr("font-size", "15px")
+          .attr("fill", "white")
+          .text(function (d) {
+            if (d.y1 - d.y0 > 20 && d.data.name.length * 10 < d.x1 - d.x0) {
+              return d.data.name;
+            }
+            return null;
+          })
+      )
       .text(function (d) {
-        return d.data.name;
+        if (d.y1 - d.y0 > 20 && d.data.name.length * 10 < d.x1 - d.x0) {
+          return d.data.name;
+        }
+        return null;
       })
       .attr("font-size", "15px")
       .attr("fill", "white");
