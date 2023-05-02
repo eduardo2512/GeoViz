@@ -41,6 +41,7 @@ html,
 body,
 #root {
   height: fit-content;
+  overflow-y: hidden;
 }
 
 ul {

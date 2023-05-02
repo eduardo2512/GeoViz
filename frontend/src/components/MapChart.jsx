@@ -16,7 +16,8 @@ function MapChart({ data }) {
 
     const geoJsonLayer = L.geoJSON(null, {
       style: feature => {
-        const color = d3.interpolateInferno(Math.random());
+        console.log(feature);
+        const color = d3.interpolateYlOrRd(Math.random());
         return { color };
       },
       pointToLayer: function (feature, latlng) {

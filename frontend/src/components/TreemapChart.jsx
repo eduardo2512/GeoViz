@@ -28,7 +28,6 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
     }
 
     // read json data
-
     const dados = TreemapChartService.obterJsonTreeMap(
       data,
       categoria,
@@ -37,7 +36,6 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
       calculoValor
     );
 
-    // Give the data to this cluster layout:
     const root = d3
       .hierarchy(dados)
       .sum(function (d) {
@@ -45,10 +43,9 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
       })
       .sort(function (a, b) {
         return b.value - a.value;
-      }); // Here the size of each leave is given in the 'value' field in input data
+      });
 
-    // Then d3.treemap computes the position of each element of the hierarchy
-    d3.treemap().size([width, height]).padding(2)(root);
+    d3.treemap().size([width, height]).paddingTop(3).paddingRight(3).paddingInner(2)(root);
 
     let Tooltip;
 
@@ -78,19 +75,32 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
       d3.select(this).style("stroke", "none").style("opacity", 0.8);
     };
     const mousemove = function (event, d) {
-      Tooltip.html("Categoria: " + d.data.name + "<br> Valor: " + d.data.value)
-        .style("left", d3.pointer(event)[0] + 70 + "px")
-        .style("top", d3.pointer(event)[1] + "px");
+      console.log(d3.pointer(event));
+      !d.parent.data.name
+        ? Tooltip.html("Categoria: " + d.data.name + "<br> Valor: " + d.data.value)
+            .style("left", d3.pointer(event)[0] + 15 + "px")
+            .style("top", d3.pointer(event)[1] + "px")
+        : Tooltip.html(
+            "Categoria: " +
+              d.parent.data.name +
+              "<br> Detalhes: " +
+              d.data.name +
+              "<br> Valor: " +
+              d.data.value
+          )
+            .style("left", d3.pointer(event)[0] + 15 + "px")
+            .style("top", d3.pointer(event)[1] + "px");
     };
     const mouseleave = function (d) {
       Tooltip.style("opacity", 0);
       d3.select(this).style("stroke", "black").style("opacity", 1);
     };
 
-    // use this information to add rectangles:
+    const color = d3.scaleOrdinal(d3.schemeCategory10);
+
     svg
       .selectAll("rect")
-      .data(root.leaves().reverse())
+      .data(root.leaves())
       .join("rect")
       .attr("x", function (d) {
         return d.x0;
@@ -105,12 +115,13 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
         return d.y1 - d.y0;
       })
       .style("stroke", "black")
-      .style("fill", "slateblue")
+      .style("fill", function (d) {
+        return color(d.parent.data.name);
+      })
       .on("mouseover", mouseover)
       .on("mousemove", mousemove)
       .on("mouseleave", mouseleave);
 
-    // and to add the text labels
     svg
       .selectAll("text")
       .data(root.leaves())
@@ -141,10 +152,45 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
       .attr("font-size", "15px")
       .attr("fill", "white");
 
+    svg
+      .selectAll("vals")
+      .data(root.leaves())
+      .join(enter =>
+        enter
+          .append("text")
+          .attr("x", function (d) {
+            return d.x0 + 5;
+          })
+          .attr("y", function (d) {
+            return d.y1 - 10;
+          })
+          .attr("font-size", "15px")
+          .attr("fill", "white")
+          .text(function (d) {
+            if (
+              d.parent.data.name &&
+              d.y1 - d.y0 > 40 &&
+              d?.parent.data.name.length * 6 < d.x1 - d.x0
+            ) {
+              return d.parent.data.name;
+            }
+            return null;
+          })
+      )
+      .text(function (d) {
+        if (d.parent.data.name && d.y1 - d.y0 > 40 && d.parent.data.name.length * 6 < d.x1 - d.x0) {
+          return d.parent.data.name;
+        }
+        return null;
+      })
+      .attr("font-size", "11px")
+      .attr("fill", "white");
+
     return () => {
       svg.selectAll("*").remove();
     };
   }, [data, detalhes, valor, categoria, calculoValor]);
+
   return (
     <div className="Treemap" ref={svgRef} id="div_template" style={{ position: "relative" }}></div>
   );
