@@ -68,20 +68,40 @@ function Home() {
     setCategoria(event.target.value);
   };
 
+  const handleClearCategoria = _ => {
+    setCategoria(null);
+    setDetalhes(null);
+    setValor(null);
+    setCalculoValor(null);
+  };
+
   const handleChangeDetalhes = event => {
     if (event.target.value === "Nenhuma opção disponível") return;
     setDetalhes(event.target.value);
   };
 
+  const handleClearDetalhes = _ => {
+    setDetalhes(null);
+  };
+
   const handleChangeValor = event => {
     if (event.target.value === "Nenhuma opção disponível") return;
     setValor(event.target.value);
-    setCalculoValor("");
+    setCalculoValor(null);
+  };
+
+  const handleClearValor = _ => {
+    setValor(null);
+    setCalculoValor(null);
   };
 
   const handleChangeCalculoValor = event => {
     if (event.target.value === "Nenhuma opção disponível") return;
     setCalculoValor(event.target.value);
+  };
+
+  const handleClearCalculoValor = _ => {
+    setCalculoValor(null);
   };
 
   const FilterMap = () => {
@@ -116,12 +136,16 @@ function Home() {
       <FilterTreeMap
         categoria={categoria}
         handleChangeCategoria={handleChangeCategoria}
+        handleClearCategoria={handleClearCategoria}
         detalhes={detalhes}
         handleChangeDetalhes={handleChangeDetalhes}
+        handleClearDetalhes={handleClearDetalhes}
         valor={valor}
         handleChangeValor={handleChangeValor}
+        handleClearValor={handleClearValor}
         calculoValor={calculoValor}
         handleChangeCalculoValor={handleChangeCalculoValor}
+        handleClearCalculoValor={handleClearCalculoValor}
         listOptions={valuesFilter}
         disableFilters={disableFilters}
         optionsFilterCalcValue={optionsFilterCalcValue}

@@ -6,12 +6,16 @@ import BasicSelect from "../shared/components/BasicSelect";
 function FilterTreeMap({
   categoria,
   handleChangeCategoria,
+  handleClearCategoria,
   detalhes,
   handleChangeDetalhes,
+  handleClearDetalhes,
   valor,
   handleChangeValor,
+  handleClearValor,
   calculoValor,
   handleChangeCalculoValor,
+  handleClearCalculoValor,
   listOptions,
   disableFilters,
   optionsFilterCalcValue
@@ -64,6 +68,7 @@ function FilterTreeMap({
             value={categoria}
             handleChange={handleChangeCategoria}
             disabled={disableFilters}
+            handleClear={handleClearCategoria}
           />
           <BasicSelect
             label={"Detalhes"}
@@ -71,6 +76,7 @@ function FilterTreeMap({
             value={detalhes}
             handleChange={handleChangeDetalhes}
             disabled={disableFilters}
+            handleClear={handleClearDetalhes}
           />
           <BasicSelect
             label={"Valor"}
@@ -78,6 +84,7 @@ function FilterTreeMap({
             value={valor}
             handleChange={handleChangeValor}
             disabled={disableFilters}
+            handleClear={handleClearValor}
           />
           <BasicSelect
             label={"Cálculo valor"}
@@ -85,6 +92,7 @@ function FilterTreeMap({
             value={calculoValor}
             handleChange={handleChangeCalculoValor}
             disabled={disableFilterCalcValue}
+            handleClear={handleClearCalculoValor}
           />
         </div>
       </div>
