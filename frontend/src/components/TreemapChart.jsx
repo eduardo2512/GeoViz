@@ -75,7 +75,6 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
       d3.select(this).style("stroke", "none").style("opacity", 0.8);
     };
     const mousemove = function (event, d) {
-      console.log(d3.pointer(event));
       !d.parent.data.name
         ? Tooltip.html("Categoria: " + d.data.name + "<br> Valor: " + d.data.value)
             .style("left", d3.pointer(event)[0] + 15 + "px")
@@ -164,7 +163,7 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
           .attr("y", function (d) {
             return d.y1 - 10;
           })
-          .attr("font-size", "15px")
+          .attr("font-size", "11px")
           .attr("fill", "white")
           .text(function (d) {
             if (
