@@ -1,0 +1,43 @@
+.detalhes {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 15px;
+  color: white;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 50%;
+}
+
+.categoria {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 11px;
+  color: white;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 50%;
+}
+
+.container-rect {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+}
+
+.bottom-span {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  display: inline-block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}

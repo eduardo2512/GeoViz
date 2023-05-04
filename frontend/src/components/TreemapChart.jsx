@@ -1,3 +1,4 @@
+import "./TreemapChart.css";
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import TreemapChartService from "../services/TreemapChartService";
@@ -71,8 +72,11 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
     }
 
     const mouseover = function (d) {
+      const className = d3.select(this).select("div").node()?.className;
       Tooltip.style("opacity", 1);
-      d3.select(this).style("stroke", "none").style("opacity", 0.8);
+      d3.selectAll("." + className)
+        .style("stroke", "none")
+        .style("opacity", 0.8);
     };
     const mousemove = function (event, d) {
       !d.parent.data.name
@@ -91,8 +95,19 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
             .style("top", d3.pointer(event)[1] + "px");
     };
     const mouseleave = function (d) {
+      const className = d3.select(this).select("div").node()?.className;
       Tooltip.style("opacity", 0);
-      d3.select(this).style("stroke", "black").style("opacity", 1);
+      d3.selectAll("." + className)
+        .style("stroke", "black")
+        .style("opacity", 1);
+    };
+
+    const filterTreemap = function (event, d) {
+      //Funçao que filtra no mapa
+      console.log(d);
+      console.log(d.parent.data.name);
+      console.log(d.data.name);
+      console.log(d.data.value);
     };
 
     const color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -113,6 +128,10 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
       .attr("height", function (d) {
         return d.y1 - d.y0;
       })
+      .attr("class", function (d) {
+        const className = d.parent.data.name + d.data.name + d.data.value;
+        return className.replace(" ", "");
+      })
       .style("stroke", "black")
       .style("fill", function (d) {
         return color(d.parent.data.name);
@@ -122,68 +141,52 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
       .on("mouseleave", mouseleave);
 
     svg
-      .selectAll("text")
-      .data(root.leaves())
-      .join(enter =>
-        enter
-          .append("text")
-          .attr("x", function (d) {
-            return d.x0 + 5;
-          })
-          .attr("y", function (d) {
-            return d.y0 + 20;
-          })
-          .attr("font-size", "15px")
-          .attr("fill", "white")
-          .text(function (d) {
-            if (d.y1 - d.y0 > 20 && d.data.name.length * 10 < d.x1 - d.x0) {
-              return d.data.name;
-            }
-            return null;
-          })
-      )
-      .text(function (d) {
-        if (d.y1 - d.y0 > 20 && d.data.name.length * 10 < d.x1 - d.x0) {
-          return d.data.name;
-        }
-        return null;
-      })
-      .attr("font-size", "15px")
-      .attr("fill", "white");
-
-    svg
       .selectAll("vals")
       .data(root.leaves())
-      .join(enter =>
-        enter
-          .append("text")
-          .attr("x", function (d) {
-            return d.x0 + 5;
-          })
-          .attr("y", function (d) {
-            return d.y1 - 10;
-          })
-          .attr("font-size", "11px")
-          .attr("fill", "white")
-          .text(function (d) {
-            if (
-              d.parent.data.name &&
-              d.y1 - d.y0 > 40 &&
-              d?.parent.data.name.length * 6 < d.x1 - d.x0
-            ) {
-              return d.parent.data.name;
-            }
-            return null;
-          })
-      )
-      .text(function (d) {
-        if (d.parent.data.name && d.y1 - d.y0 > 40 && d.parent.data.name.length * 6 < d.x1 - d.x0) {
-          return d.parent.data.name;
-        }
-        return null;
+      .join("foreignObject")
+      .attr("x", function (d) {
+        return d.x0;
       })
-      .attr("font-size", "11px")
-      .attr("fill", "white");
+      .attr("y", function (d) {
+        return d.y0;
+      })
+      .attr("width", function (d) {
+        return d.x1 - d.x0;
+      })
+      .attr("height", function (d) {
+        return d.y1 - d.y0;
+      })
+      .on("mouseover", mouseover)
+      .on("mousemove", mousemove)
+      .on("mouseleave", mouseleave)
+      .on("click", filterTreemap)
+      .append("xhtml:div")
+      .attr("class", function (d) {
+        const className = d.parent.data.name + d.data.name + d.data.value;
+        return className.replace(" ", "");
+      })
+      .each(function (d) {
+        if (d.y1 - d.y0 > 20 && d.x1 - d.x0 > 20) {
+          d3.select(this)
+            .append("xhtml:div")
+            .attr("class", "detalhes")
+            .append("xhtml:span")
+            .text(function (d) {
+              return d.data.name;
+            });
+        }
+        if (d.parent.data.name && d.y1 - d.y0 > 40 && d.x1 - d.x0 > 20) {
+          d3.select(this)
+            .append("xhtml:div")
+            .attr("class", "categoria")
+            .append("xhtml:span")
+            .attr("class", "bottom-span")
+
+            .text(function (d) {
+              return d.parent.data.name;
+            });
+        }
+      });
 
     return () => {
       svg.selectAll("*").remove();

@@ -33,6 +33,10 @@ function Home() {
   const handleChangeOptionsMapGeoJson = async event => {
     if (event.target.value === "Nenhuma opção disponível") return;
     setOptionMapGeoJson(event.target.value);
+    setCategoria("");
+    setDetalhes("");
+    setValor("");
+    setCalculoValor("");
     setDisableFilters(false);
 
     if (event.target.value === uploadGeoJsonObject?.name) {
