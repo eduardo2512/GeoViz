@@ -129,8 +129,8 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
         return d.y1 - d.y0;
       })
       .attr("class", function (d) {
-        const className = d.parent.data.name + d.data.name + d.data.value;
-        return className.replace(" ", "");
+        const className = "class" + d.parent.data.name + d.data.name + d.data.value;
+        return className.replace(" ", "").normalize("NFD");
       })
       .style("stroke", "black")
       .style("fill", function (d) {
@@ -162,8 +162,8 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
       .on("click", filterTreemap)
       .append("xhtml:div")
       .attr("class", function (d) {
-        const className = d.parent.data.name + d.data.name + d.data.value;
-        return className.replace(" ", "");
+        const className = "class" + d.parent.data.name + d.data.name + d.data.value;
+        return className.replace(" ", "").normalize("NFD");
       })
       .each(function (d) {
         if (d.y1 - d.y0 > 20 && d.x1 - d.x0 > 20) {

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import L from "leaflet";
 import * as d3 from "d3";
+import MapChartService from "../services/MapChartService";
 
 import "leaflet/dist/leaflet.css";
 
@@ -8,6 +9,7 @@ function MapChart({ data }) {
   const mapRef = useRef(null);
 
   useEffect(() => {
+    console.log(data);
     const map = L.map(mapRef.current, {}).setView([-14.235, -51.9253], 4);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -16,7 +18,7 @@ function MapChart({ data }) {
 
     const geoJsonLayer = L.geoJSON(null, {
       style: feature => {
-        const color = d3.interpolateYlOrRd(Math.random());
+        const color = "#ff7800";
         return { color };
       },
       pointToLayer: function (feature, latlng) {
@@ -28,6 +30,10 @@ function MapChart({ data }) {
           opacity: 1,
           fillOpacity: 0.8
         });
+      },
+      onEachFeature: function (feature, layer) {
+        const tooltipContent = MapChartService.obterTooltipMapa(feature.properties); // ou qualquer outra propriedade que você tenha adicionado
+        layer.bindTooltip(tooltipContent);
       }
     }).addTo(map);
 
