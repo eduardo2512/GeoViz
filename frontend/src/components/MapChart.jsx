@@ -5,11 +5,24 @@ import MapChartService from "../services/MapChartService";
 
 import "leaflet/dist/leaflet.css";
 
-function MapChart({ data }) {
+function MapChart({ data, categoria, detalhes, filterTreemapCategoria, filterTreemapDetalhes }) {
   const mapRef = useRef(null);
 
   useEffect(() => {
-    console.log(data);
+    const filterData = {
+      ...data,
+      features:
+        filterTreemapCategoria !== ""
+          ? filterTreemapDetalhes !== ""
+            ? data.features.filter(
+                f =>
+                  f.properties[categoria] === filterTreemapCategoria &&
+                  f.properties[detalhes] === filterTreemapDetalhes
+              )
+            : data.features.filter(f => f.properties[categoria] === filterTreemapCategoria)
+          : data.features
+    };
+
     const map = L.map(mapRef.current, {}).setView([-14.235, -51.9253], 4);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -32,17 +45,17 @@ function MapChart({ data }) {
         });
       },
       onEachFeature: function (feature, layer) {
-        const tooltipContent = MapChartService.obterTooltipMapa(feature.properties); // ou qualquer outra propriedade que você tenha adicionado
+        const tooltipContent = MapChartService.obterTooltipMapa(feature.properties);
         layer.bindTooltip(tooltipContent);
       }
     }).addTo(map);
 
-    geoJsonLayer.addData(data);
+    geoJsonLayer.addData(filterData);
 
     return () => {
       map.remove();
     };
-  }, [data]);
+  }, [data, categoria, detalhes, filterTreemapCategoria, filterTreemapDetalhes]);
 
   return <div id="MapChart" ref={mapRef} style={{ height: "400px", width: "50%" }} />;
 }

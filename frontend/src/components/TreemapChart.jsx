@@ -3,7 +3,17 @@ import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import TreemapChartService from "../services/TreemapChartService";
 
-function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
+function TreemapChart({
+  data,
+  categoria,
+  detalhes,
+  valor,
+  calculoValor,
+  filterTreemapCategoria,
+  filterTreemapDetalhes,
+  setFilterTreemapCategoria,
+  setFilterTreemapDetalhes
+}) {
   const svgRef = useRef();
   const [svgCreated, setSvgCreated] = useState(false);
   const [tooltipCreated, setTooltipCreated] = useState(false);
@@ -103,11 +113,22 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
     };
 
     const filterTreemap = function (event, d) {
-      //Funçao que filtra no mapa
-      console.log(d);
-      console.log(d.parent.data.name);
-      console.log(d.data.name);
-      console.log(d.data.value);
+      if (
+        filterTreemapCategoria === d.data.name ||
+        (detalhes &&
+          filterTreemapCategoria === d.parent.data.name &&
+          filterTreemapDetalhes === d.data.name)
+      ) {
+        setFilterTreemapDetalhes("");
+        setFilterTreemapCategoria("");
+      } else {
+        if (detalhes) {
+          setFilterTreemapDetalhes(d.data.name);
+          setFilterTreemapCategoria(d.parent.data.name);
+        } else {
+          setFilterTreemapCategoria(d.data.name);
+        }
+      }
     };
 
     const color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -135,10 +156,7 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
       .style("stroke", "black")
       .style("fill", function (d) {
         return color(d.parent.data.name);
-      })
-      .on("mouseover", mouseover)
-      .on("mousemove", mousemove)
-      .on("mouseleave", mouseleave);
+      });
 
     svg
       .selectAll("vals")
@@ -191,7 +209,17 @@ function TreemapChart({ data, categoria, detalhes, valor, calculoValor }) {
     return () => {
       svg.selectAll("*").remove();
     };
-  }, [data, detalhes, valor, categoria, calculoValor]);
+  }, [
+    data,
+    detalhes,
+    valor,
+    categoria,
+    calculoValor,
+    setFilterTreemapCategoria,
+    filterTreemapCategoria,
+    setFilterTreemapDetalhes,
+    filterTreemapDetalhes
+  ]);
 
   return (
     <div className="Treemap" ref={svgRef} id="div_template" style={{ position: "relative" }}></div>

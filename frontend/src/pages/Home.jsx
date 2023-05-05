@@ -20,6 +20,8 @@ function Home() {
   const [valor, setValor] = useState("");
   const [calculoValor, setCalculoValor] = useState("");
   const [disableFilters, setDisableFilters] = useState(true);
+  const [filterTreemapCategoria, setFilterTreemapCategoria] = useState("");
+  const [filterTreemapDetalhes, setFilterTreemapDetalhes] = useState("");
 
   useEffect(() => {
     fetchDataOptions();
@@ -38,6 +40,8 @@ function Home() {
     setValor("");
     setCalculoValor("");
     setDisableFilters(false);
+    setFilterTreemapDetalhes("");
+    setFilterTreemapCategoria("");
 
     if (event.target.value === uploadGeoJsonObject?.name) {
       setSelectedGeoJsonObject(uploadGeoJsonObject);
@@ -70,6 +74,8 @@ function Home() {
   const handleChangeCategoria = event => {
     if (event.target.value === "Nenhuma opção disponível") return;
     setCategoria(event.target.value);
+    setFilterTreemapDetalhes("");
+    setFilterTreemapCategoria("");
   };
 
   const handleClearCategoria = _ => {
@@ -77,15 +83,21 @@ function Home() {
     setDetalhes(null);
     setValor(null);
     setCalculoValor(null);
+    setFilterTreemapDetalhes("");
+    setFilterTreemapCategoria("");
   };
 
   const handleChangeDetalhes = event => {
     if (event.target.value === "Nenhuma opção disponível") return;
     setDetalhes(event.target.value);
+    setFilterTreemapDetalhes("");
+    setFilterTreemapCategoria("");
   };
 
   const handleClearDetalhes = _ => {
     setDetalhes(null);
+    setFilterTreemapDetalhes("");
+    setFilterTreemapCategoria("");
   };
 
   const handleChangeValor = event => {
@@ -173,7 +185,17 @@ function Home() {
             padding-top: 20px;
           `}
         >
-          {selectedGeoJsonObject ? <MapChart data={selectedGeoJsonObject} /> : <></>}
+          {selectedGeoJsonObject ? (
+            <MapChart
+              data={selectedGeoJsonObject}
+              categoria={categoria}
+              detalhes={detalhes}
+              filterTreemapCategoria={filterTreemapCategoria}
+              filterTreemapDetalhes={filterTreemapDetalhes}
+            />
+          ) : (
+            <></>
+          )}
           {selectedGeoJsonObject && categoria && valor && calculoValor ? (
             <TreemapChart
               data={selectedGeoJsonObject}
@@ -181,6 +203,10 @@ function Home() {
               detalhes={detalhes}
               valor={valor}
               calculoValor={calculoValor}
+              filterTreemapCategoria={filterTreemapCategoria}
+              filterTreemapDetalhes={filterTreemapDetalhes}
+              setFilterTreemapCategoria={setFilterTreemapCategoria}
+              setFilterTreemapDetalhes={setFilterTreemapDetalhes}
             />
           ) : (
             <></>
