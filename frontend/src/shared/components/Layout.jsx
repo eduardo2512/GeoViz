@@ -122,7 +122,7 @@ function Layout({ children }) {
             </div>
 
             <Link
-              to={"https://github.com/"}
+              to={"https://github.com/eduardo2512/GeoViz"}
               css={css`
                 &:link {
                   text-decoration: none;
