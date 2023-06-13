@@ -151,7 +151,11 @@ function TreemapChart({
       })
       .attr("class", function (d) {
         const className = "class" + d.parent.data.name + d.data.name + d.data.value;
-        return className.replace(" ", "").normalize("NFD");
+
+        return className
+          .normalize("NFD")
+          .replace(/[^a-zA-Z0-9]/g, "")
+          .replace(" ", "");
       })
       .style("stroke", "black")
       .style("fill", function (d) {
@@ -181,7 +185,10 @@ function TreemapChart({
       .append("xhtml:div")
       .attr("class", function (d) {
         const className = "class" + d.parent.data.name + d.data.name + d.data.value;
-        return className.replace(" ", "").normalize("NFD");
+        return className
+          .normalize("NFD")
+          .replace(/[^a-zA-Z0-9]/g, "")
+          .replace(" ", "");
       })
       .each(function (d) {
         if (d.y1 - d.y0 > 20 && d.x1 - d.x0 > 20) {
