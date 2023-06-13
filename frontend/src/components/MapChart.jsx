@@ -16,10 +16,10 @@ function MapChart({ data, categoria, detalhes, filterTreemapCategoria, filterTre
           ? filterTreemapDetalhes !== ""
             ? data.features.filter(
                 f =>
-                  f.properties[categoria] === filterTreemapCategoria &&
-                  f.properties[detalhes] === filterTreemapDetalhes
+                  f.properties[categoria] == filterTreemapCategoria &&
+                  f.properties[detalhes] == filterTreemapDetalhes
               )
-            : data.features.filter(f => f.properties[categoria] === filterTreemapCategoria)
+            : data.features.filter(f => f.properties[categoria] == filterTreemapCategoria)
           : data.features
     };
 
