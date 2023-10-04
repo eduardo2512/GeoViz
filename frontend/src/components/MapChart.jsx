@@ -6,7 +6,8 @@ import MapChartService from "../services/MapChartService";
 import "leaflet/dist/leaflet.css";
 
 function MapChart({ data, categoria, detalhes, filterTreemapCategoria, filterTreemapDetalhes }) {
-  const mapRef = useRef(null);
+    const mapboxToken = 'pk.eyJ1IjoiZWR1YXJkbzI1MTIiLCJhIjoiY2xtdjh5ZGtqMGZtZzJrdDN4b2J4aXA4aCJ9.rQGZBuiqTXv85WZuZj7oRg';
+    const mapRef = useRef(null);
 
   useEffect(() => {
     const filterData = {
@@ -23,11 +24,15 @@ function MapChart({ data, categoria, detalhes, filterTreemapCategoria, filterTre
           : data.features
     };
 
-    const map = L.map(mapRef.current, {}).setView([-14.235, -51.9253], 4);
+    const map = L.map(mapRef.current, { fullscreenControl: true }).setView([-14.235, -51.9253], 4);
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 18
-    }).addTo(map);
+    L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${mapboxToken}`, {
+            maxZoom: 18,
+            id: 'mapbox/dark-v11',
+            tileSize: 512,
+            zoomOffset: -1,
+        }).addTo(map);
+
 
     const geoJsonLayer = L.geoJSON(null, {
       style: feature => {
@@ -57,7 +62,7 @@ function MapChart({ data, categoria, detalhes, filterTreemapCategoria, filterTre
     };
   }, [data, categoria, detalhes, filterTreemapCategoria, filterTreemapDetalhes]);
 
-  return <div id="MapChart" ref={mapRef} style={{ height: "400px", width: "50%" }} />;
+  return <div style={{width: "50%" }}><div id="MapChart" ref={mapRef} style={{ height: "400px", }} /></div>;
 }
 
 export default MapChart;
