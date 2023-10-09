@@ -76,6 +76,7 @@ function Home() {
     setCategoria(event.target.value);
     setFilterTreemapDetalhes("");
     setFilterTreemapCategoria("");
+    handleClearValor();
   };
 
   const handleClearCategoria = _ => {
@@ -107,8 +108,8 @@ function Home() {
   };
 
   const handleClearValor = _ => {
-    setValor(null);
-    setCalculoValor(null);
+    setValor("");
+    setCalculoValor("");
   };
 
   const handleChangeCalculoValor = event => {
@@ -192,6 +193,8 @@ function Home() {
               detalhes={detalhes}
               filterTreemapCategoria={filterTreemapCategoria}
               filterTreemapDetalhes={filterTreemapDetalhes}
+              valor={valor}
+              key={categoria || detalhes || valor}
             />
           ) : (
             <></>
