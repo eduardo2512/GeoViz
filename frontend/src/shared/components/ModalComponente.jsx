@@ -18,14 +18,11 @@ const ModalComponente = ({
   setMapBox,
   visualizacao,
   setVisualizacao,
-  disabledMapaCoropletico
+  disabledMapaCoropletico,
+  disabledMapaDeCalor
 }) => {
-  const visualizacaoInicial =
-    visualizacao === "Mapa de coroplético" && disabledMapaCoropletico
-      ? "Mapa normal"
-      : visualizacao;
   const [mapBoxInput, setMapBoxInput] = useState(mapBox);
-  const [visualizacaoInput, setVisualizacaoInput] = useState(visualizacaoInicial);
+  const [visualizacaoInput, setVisualizacaoInput] = useState(visualizacao);
 
   const handleClose = () => {
     setOpen(false);
@@ -106,7 +103,12 @@ const ModalComponente = ({
               onChange={handleVisualizacaoChange}
             >
               <FormControlLabel value="Mapa normal" control={<Radio />} label="Mapa normal" />
-              <FormControlLabel value="Mapa de calor" control={<Radio />} label="Mapa de calor" />
+              <FormControlLabel
+                value="Mapa de calor"
+                control={<Radio />}
+                label="Mapa de calor"
+                disabled={disabledMapaDeCalor}
+              />
               <FormControlLabel
                 value="Mapa de coroplético"
                 control={<Radio />}

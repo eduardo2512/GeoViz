@@ -194,7 +194,7 @@ function Home() {
               filterTreemapCategoria={filterTreemapCategoria}
               filterTreemapDetalhes={filterTreemapDetalhes}
               valor={valor}
-              key={categoria || detalhes || valor}
+              key={categoria || detalhes || valor || selectedGeoJsonObject}
             />
           ) : (
             <></>

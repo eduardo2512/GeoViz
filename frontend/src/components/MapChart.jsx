@@ -11,6 +11,8 @@ import "leaflet-easybutton/src/easy-button.css";
 import "leaflet-easybutton";
 import "font-awesome/css/font-awesome.min.css";
 
+import "leaflet.heat/dist/leaflet-heat"; // Import leaflet-heat.css
+
 function MapChart({
   data,
   categoria,
@@ -50,10 +52,6 @@ function MapChart({
         ? "#FED976"
         : "#FFEDA0";
 
-    console.log(valorAtual);
-    console.log(maiorValor);
-    console.log(menorValor);
-    console.log("__________________________");
     return cor;
   }
 
@@ -89,44 +87,56 @@ function MapChart({
       }
     ).addTo(map);
 
-    const geoJsonLayer = L.geoJSON(null, {
-      style: feature => {
-        const fillColor =
-          visualizacao === "Mapa de coroplético" && valor !== ""
-            ? getColor(feature["properties"][valor], max, min)
-            : "#ff7800";
-
-        return {
-          fillColor: fillColor,
-          weight: 2,
-          opacity: 1,
-          color: "white",
-          dashArray: "3",
-          fillOpacity: 0.7
-        };
-      },
-      pointToLayer: function (feature, latlng) {
-        return L.circleMarker(latlng, {
-          radius: 8,
-          fillColor:
+    if (visualizacao === "Mapa normal" || visualizacao === "Mapa de coroplético") {
+      const geoJsonLayer = L.geoJSON(null, {
+        style: feature => {
+          const fillColor =
             visualizacao === "Mapa de coroplético" && valor !== ""
               ? getColor(feature["properties"][valor], max, min)
-              : "#ff7800",
-          color: "#000",
-          weight: 1,
-          opacity: 1,
-          fillOpacity: 0.8
-        });
-      },
-      onEachFeature: function (feature, layer) {
-        const tooltipContent = MapChartService.obterTooltipMapa(feature.properties);
-        layer.bindTooltip(tooltipContent);
-      }
-    }).addTo(map);
+              : "#ff7800";
 
-    geoJsonLayer.addData(filterData);
+          return {
+            fillColor: fillColor,
+            weight: 2,
+            opacity: 1,
+            color: MapChartService.obterTipoMapa(data) === "MultiLineString" ? "#ff7800" : "white",
+            dashArray: "3",
+            fillOpacity: 0.7
+          };
+        },
+        pointToLayer: function (feature, latlng) {
+          return L.circleMarker(latlng, {
+            radius: 8,
+            fillColor:
+              visualizacao === "Mapa de coroplético" && valor !== ""
+                ? getColor(feature["properties"][valor], max, min)
+                : "#ff7800",
+            color: "#000",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8
+          });
+        },
+        onEachFeature: function (feature, layer) {
+          const tooltipContent = MapChartService.obterTooltipMapa(feature.properties);
+          layer.bindTooltip(tooltipContent);
+        }
+      }).addTo(map);
+
+      geoJsonLayer.addData(filterData);
+    }
 
     L.easyButton("fa-cog", handleOpen).addTo(map);
+
+    if (visualizacao === "Mapa de calor") {
+      const mapaDeCalor = MapChartService.obterMapaDeCalor(filterData);
+
+      L.heatLayer(mapaDeCalor, {
+        radius: 30,
+        minOpacity: 0.4,
+        gradient: { 0.4: "blue", 0.65: "lime", 1: "red" }
+      }).addTo(map);
+    }
 
     return () => {
       map.remove();
@@ -154,6 +164,7 @@ function MapChart({
           visualizacao={visualizacao}
           setVisualizacao={setVisualizacao}
           disabledMapaCoropletico={valor === ""}
+          disabledMapaDeCalor={MapChartService.obterTipoMapa(data) !== "Point"}
         />
       )}
     </div>
