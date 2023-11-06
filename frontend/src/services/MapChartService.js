@@ -8,7 +8,6 @@ class MapChartService {
   }
 
   obterMapaDeCalor(data) {
-    console.log(data);
     if (data.features[0].geometry.type !== "Point") return [];
     return data.features.map(feature => [
       feature.geometry.coordinates[1],

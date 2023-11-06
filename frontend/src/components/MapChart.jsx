@@ -132,9 +132,10 @@ function MapChart({
       const mapaDeCalor = MapChartService.obterMapaDeCalor(filterData);
 
       L.heatLayer(mapaDeCalor, {
-        radius: 30,
+        radius: 20,
         minOpacity: 0.4,
-        gradient: { 0.4: "blue", 0.65: "lime", 1: "red" }
+        gradient: { 0.4: "blue", 0.65: "lime", 1: "red" },
+        scaleRadius: true
       }).addTo(map);
     }
 

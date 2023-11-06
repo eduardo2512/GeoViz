@@ -1,5 +1,13 @@
 import React from "react";
-import { Box, FormControl, InputLabel, MenuItem, Select, IconButton } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  IconButton,
+  Typography
+} from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 
 function BasicSelect({
@@ -9,7 +17,8 @@ function BasicSelect({
   handleClear,
   value,
   width = 150,
-  disabled = false
+  disabled = false,
+  listOptionsDicionario
 }) {
   let options = listOptions;
   if (!Array.isArray(options) || !options.length) {
@@ -20,6 +29,13 @@ function BasicSelect({
     return (
       <MenuItem value={option} key={`${value} ${option}`}>
         {option}
+        <Typography fontWeight={600} fontSize={11}>
+          {listOptionsDicionario
+            ? listOptionsDicionario.find(value => value.key === option)?.isCategorical
+              ? "(categórico)"
+              : "(quantitativo)"
+            : " "}
+        </Typography>
       </MenuItem>
     );
   };

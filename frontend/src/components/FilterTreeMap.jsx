@@ -69,6 +69,7 @@ function FilterTreeMap({
             handleChange={handleChangeCategoria}
             disabled={disableFilters}
             handleClear={handleClearCategoria}
+            listOptionsDicionario={listOptions}
           />
           <BasicSelect
             label={"Detalhes"}
@@ -77,6 +78,7 @@ function FilterTreeMap({
             handleChange={handleChangeDetalhes}
             disabled={disableFilters}
             handleClear={handleClearDetalhes}
+            listOptionsDicionario={listOptions}
           />
           <BasicSelect
             label={"Valor"}
@@ -85,6 +87,7 @@ function FilterTreeMap({
             handleChange={handleChangeValor}
             disabled={disableFilters}
             handleClear={handleClearValor}
+            listOptionsDicionario={listOptions}
           />
           <BasicSelect
             label={"Cálculo valor"}

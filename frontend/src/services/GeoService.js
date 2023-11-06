@@ -6,7 +6,7 @@ class GeoService {
     if (!response) {
       return;
     }
-    return response.data.map(table => table.name);
+    return response.data;
   }
 
   async getGeoJson(table) {
@@ -15,6 +15,7 @@ class GeoService {
         table
       }
     });
+
     if (!response) {
       return;
     }
