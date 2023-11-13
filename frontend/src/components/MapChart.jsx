@@ -131,12 +131,16 @@ function MapChart({
     if (visualizacao === "Mapa de calor") {
       const mapaDeCalor = MapChartService.obterMapaDeCalor(filterData);
 
-      L.heatLayer(mapaDeCalor, {
-        radius: 20,
+      var heatmap = L.heatLayer(mapaDeCalor, {
+        radius: calcularRaioPorZoom(map.getZoom()),
         minOpacity: 0.4,
         gradient: { 0.4: "blue", 0.65: "lime", 1: "red" },
         scaleRadius: true
       }).addTo(map);
+
+      map.on("zoomend", function () {
+        heatmap.setOptions({ radius: calcularRaioPorZoom(map.getZoom()) });
+      });
     }
 
     return () => {
@@ -152,6 +156,25 @@ function MapChart({
     mapBox,
     visualizacao
   ]);
+
+  function calcularRaioPorZoom(zoom) {
+    // Mapeie os níveis de zoom para valores de raio desejados
+    var niveisDeZoom = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+    const raios = [
+      1.5625, 3.125, 6.25, 12.5, 25, 50, 100, 200, 400, 800, 1600, 3200, 6400, 12800, 25600, 51200,
+      102400, 204800
+    ];
+    // Encontre o índice correspondente ao nível de zoom atual
+    var indice = niveisDeZoom.indexOf(zoom);
+
+    // Se o nível de zoom não estiver na lista, use o raio máximo
+    if (indice === -1) {
+      indice = niveisDeZoom.length - 1;
+    }
+
+    // Retorne o valor do raio correspondente ao nível de zoom atual
+    return raios[indice];
+  }
 
   return (
     <div style={{ width: "50%" }}>

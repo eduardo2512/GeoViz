@@ -9,6 +9,7 @@ import HomeService from "../services/HomeService";
 import MapChart from "../components/MapChart";
 import TreemapChart from "../components/TreemapChart";
 import GeoService from "../services/GeoService";
+import { DICIONARIO_ANO_TABELA } from "../shared/utils/DicionarioAnoTabela";
 
 function Home() {
   const [uploadGeoJsonObject, setUploadGeoJsonObject] = useState(null);
@@ -22,6 +23,7 @@ function Home() {
   const [disableFilters, setDisableFilters] = useState(true);
   const [filterTreemapCategoria, setFilterTreemapCategoria] = useState("");
   const [filterTreemapDetalhes, setFilterTreemapDetalhes] = useState("");
+  const [slider, setSlider] = useState(0);
 
   useEffect(() => {
     fetchDataOptions();
@@ -46,10 +48,42 @@ function Home() {
     if (event.target.value === uploadGeoJsonObject?.name) {
       setSelectedGeoJsonObject(uploadGeoJsonObject);
     } else {
-      const geojson = await GeoService.getGeoJson(event.target.value);
-      setSelectedGeoJsonObject(geojson);
+      if (event.target.value === "eleicoes_presidente_haddadlula") {
+        const tabela = `eleicoes_presidente_haddadlula_${DICIONARIO_ANO_TABELA["eleicoes_presidente_haddadlula"][0]}`;
+        const geojson = await GeoService.getGeoJson(tabela);
+        setSlider(DICIONARIO_ANO_TABELA["eleicoes_presidente_haddadlula"][0]);
+        setSelectedGeoJsonObject(geojson);
+      } else if (event.target.value === "eleicoes_presidente_bolsonaro") {
+        const tabela = `eleicoes_presidente_bolsonaro_${DICIONARIO_ANO_TABELA["eleicoes_presidente_bolsonaro"][0]}`;
+        const geojson = await GeoService.getGeoJson(tabela);
+        setSlider(DICIONARIO_ANO_TABELA["eleicoes_presidente_bolsonaro"][0]);
+        setSelectedGeoJsonObject(geojson);
+      } else if (event.target.value === "cobertura_vacinal_bcg") {
+        const tabela = `cobertura_vacinal_bcg_${DICIONARIO_ANO_TABELA["cobertura_vacinal_bcg"][0]}`;
+        const geojson = await GeoService.getGeoJson(tabela);
+        setSlider(DICIONARIO_ANO_TABELA["cobertura_vacinal_bcg"][0]);
+        setSelectedGeoJsonObject(geojson);
+      } else if (event.target.value === "cobertura_vacinal_febre_amarela") {
+        const tabela = `cobertura_vacinal_febre_amarela_${DICIONARIO_ANO_TABELA["cobertura_vacinal_febre_amarela"][0]}`;
+        const geojson = await GeoService.getGeoJson(tabela);
+        setSlider(DICIONARIO_ANO_TABELA["cobertura_vacinal_febre_amarela"][0]);
+        setSelectedGeoJsonObject(geojson);
+      } else {
+        const geojson = await GeoService.getGeoJson(event.target.value);
+        setSelectedGeoJsonObject(geojson);
+      }
     }
   };
+
+  const handleSlider = async () => {
+    const tabela = `${optionMapGeoJson}_${slider}`;
+    const geojson = await GeoService.getGeoJson(tabela);
+    setSelectedGeoJsonObject(geojson);
+  };
+
+  useEffect(() => {
+    handleSlider();
+  }, [slider, setSlider]);
 
   const valuesFilter = useMemo(
     () => HomeService.obterValoresFiltro(selectedGeoJsonObject),
@@ -166,6 +200,9 @@ function Home() {
         listOptions={valuesFilter}
         disableFilters={disableFilters}
         optionsFilterCalcValue={optionsFilterCalcValue}
+        optionMapGeoJson={optionMapGeoJson}
+        slider={slider}
+        setSlider={setSlider}
       />
 
       <div

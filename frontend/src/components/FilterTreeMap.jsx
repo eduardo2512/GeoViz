@@ -2,6 +2,8 @@
 import React, { useMemo } from "react";
 import { css } from "@emotion/react";
 import BasicSelect from "../shared/components/BasicSelect";
+import SliderComponent from "../shared/components/SliderComponent";
+import { DICIONARIO_ANO_TABELA, DICIONARIO_MARKS } from "../shared/utils/DicionarioAnoTabela";
 
 function FilterTreeMap({
   categoria,
@@ -18,7 +20,10 @@ function FilterTreeMap({
   handleClearCalculoValor,
   listOptions,
   disableFilters,
-  optionsFilterCalcValue
+  optionsFilterCalcValue,
+  optionMapGeoJson,
+  slider,
+  setSlider
 }) {
   const disableFilterCalcValue = useMemo(() => (!valor ? true : false), [valor]);
   const listOptionsKey = useMemo(() => listOptions.map(option => option.key), [listOptions]);
@@ -97,6 +102,18 @@ function FilterTreeMap({
             disabled={disableFilterCalcValue}
             handleClear={handleClearCalculoValor}
           />
+          {(optionMapGeoJson === "eleicoes_presidente_haddadlula" ||
+            optionMapGeoJson === "eleicoes_presidente_bolsonaro" ||
+            optionMapGeoJson === "cobertura_vacinal_bcg" ||
+            optionMapGeoJson === "cobertura_vacinal_febre_amarela") && (
+            <SliderComponent
+              sliderValue={slider}
+              setSliderValue={setSlider}
+              min={Math.min(...DICIONARIO_ANO_TABELA[optionMapGeoJson])}
+              max={Math.max(...DICIONARIO_ANO_TABELA[optionMapGeoJson])}
+              marks={DICIONARIO_MARKS[optionMapGeoJson]}
+            />
+          )}
         </div>
       </div>
       <div

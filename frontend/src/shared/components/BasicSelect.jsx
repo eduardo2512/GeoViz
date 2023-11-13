@@ -29,11 +29,11 @@ function BasicSelect({
     return (
       <MenuItem value={option} key={`${value} ${option}`}>
         {option}
-        <Typography fontWeight={600} fontSize={11}>
+        <Typography fontWeight={600} fontSize={11} paddingLeft={1}>
           {listOptionsDicionario
             ? listOptionsDicionario.find(value => value.key === option)?.isCategorical
               ? "(categórico)"
-              : "(quantitativo)"
+              : " (quantitativo)"
             : " "}
         </Typography>
       </MenuItem>
